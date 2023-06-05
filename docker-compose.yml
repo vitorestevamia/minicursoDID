@@ -1,0 +1,41 @@
+version: "3.5"
+
+services:
+  agent:
+      image: bcgovimages/aries-cloudagent:py36-1.16-1_1.0.0-rc1
+
+      container_name: aca-py-agent
+      environment:
+        ACAPY_ENDPOINT: "${ENDPOINT}"
+        ACAPY_LABEL: "My Agent"
+
+        ACAPY_ADMIN_INSECURE_MODE: "true"
+        ACAPY_AUTO_PROVISION: "true"
+        ACAPY_LOG_LEVEL: "info"
+
+        ACAPY_GENESIS_URL: "http://dev.bcovrin.vonx.io/genesis"
+        ACAPY_WALLET_TYPE: "indy"
+        ACAPY_WALLET_SEED: "${WALLET_SEED}"
+        ACAPY_WALLET_NAME: "wallet"
+        ACAPY_WALLET_KEY: "walletkey"
+
+      entrypoint: /bin/bash
+      command:
+        [
+          "-c",
+          "aca-py start 
+          --inbound-transport http '0.0.0.0' 8001
+          --outbound-transport http 
+          --admin '0.0.0.0' 8002
+          --auto-accept-invites
+          --auto-accept-requests
+          --auto-ping-connection
+          --auto-respond-credential-proposal
+          --auto-respond-credential-offer
+          --auto-respond-credential-request
+          --auto-store-credential
+          --auto-respond-presentation-proposal"
+        ]
+      ports:
+        - "8002:8002"
+        - "8001:8001"
